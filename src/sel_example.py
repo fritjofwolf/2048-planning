@@ -35,13 +35,15 @@ def extractInfos(gameState):
 	
 	grid = np.zeros((4,4))
 	counter = 0
-	for i in len(gridString):
+	
+	
+	for i in range(len(gridString)):
 		if "null" in gridString[i]:
 			counter += 1
 			continue
 		elif "position" in gridString[i]:
 			puffer = gridString[i+2]
-			grid[counter//4, counter%4] = int(puffer[8:-1])
+			grid[counter%4, counter//4] = int(puffer[8:-1])
 			counter += 1
 			
 	gameStateDict["grid"] = grid
@@ -49,7 +51,9 @@ def extractInfos(gameState):
 	# Extract other informations
 	gridString = gameState[1].split(",")
 	gameStateDict["score"] = int(gridString[0][8:])
-	#gameStateDict["over"] = 
+	gameStateDict["over"] = False if gridString[1][7:] == "false" else True 
+	gameStateDict["won"] = False if gridString[2][6:] == "false" else True 
+	gameStateDict["keepPlaying"] = False if gridString[3][14:] == "false" else True 
 	
 	return gameStateDict
 	
