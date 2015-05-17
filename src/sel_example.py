@@ -10,7 +10,7 @@ import numpy as np
 #{"position":{"x":3,"y":3},"value":4}]]},"score":8,"over":false,
 #"won":false,"keepPlaying":false}'
 
-b = '{"grid":{"size":4,"cells":[[null,null,null,null],[null,null,null,null],[{"position":{"x":2,"y":0},"value":2},null,null,null],[null,null,{"position":{"x":3,"y":2},"value":4},{"position":{"x":3,"y":3},"value":4}]]},"score":8,"over":false,"won":false,"keepPlaying":false}'
+#b = '{"grid":{"size":4,"cells":[[null,null,null,null],[null,null,null,null],[{"position":{"x":2,"y":0},"value":2},null,null,null],[null,null,{"position":{"x":3,"y":2},"value":4},{"position":{"x":3,"y":3},"value":4}]]},"score":8,"over":false,"won":false,"keepPlaying":false}'
 
 
 def extractInfos(gameState):
@@ -58,25 +58,19 @@ def extractInfos(gameState):
 	return gameStateDict
 	
 	
-print(extractInfos(b))
+if "__name__" == "__main__":
+	driver = webdriver.Firefox()
+	driver.get("http://gabrielecirulli.github.io/2048/")
+	elem = driver.find_element_by_class_name("grid-container")
 
+	for i in range(10):
+		for j in range(10):
+			elem.send_keys(Keys.ARROW_DOWN)
+			extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
+			elem.send_keys(Keys.ARROW_LEFT)
+			extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
+		elem.send_keys(Keys.ARROW_RIGHT)
+		extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
 
-driver = webdriver.Firefox()
-driver.get("http://gabrielecirulli.github.io/2048/")
-elem = driver.find_element_by_class_name("grid-container")
-
-
-for i in range(1):
-	#print(driver.find_element_by_class_name("score-container").text)
-	for j in range(1):
-		elem.send_keys(Keys.ARROW_DOWN)
-		elem.send_keys(Keys.ARROW_LEFT)
-	elem.send_keys(Keys.ARROW_RIGHT)
-	
-result = driver.execute_script("return localStorage.getItem('gameState')")
-print(driver.get("return localStorage.getItem('bestScore')"))
-#elem.send_keys(Keys.ARROW_DOWN)
-print(result.split(","))
-#print(driver.find_element_by_class_name("score-container").text)
-time.sleep(3)
-driver.close()
+	time.sleep(10)
+	driver.close()
