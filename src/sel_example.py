@@ -58,19 +58,37 @@ def extractInfos(gameState):
 	return gameStateDict
 	
 	
-if "__name__" == "__main__":
-	driver = webdriver.Firefox()
-	driver.get("http://gabrielecirulli.github.io/2048/")
-	elem = driver.find_element_by_class_name("grid-container")
+driver = webdriver.Firefox()
+driver.get("http://gabrielecirulli.github.io/2048/")
+elem = driver.find_element_by_class_name("grid-container")
 
-	for i in range(10):
-		for j in range(10):
+elem.send_keys(Keys.ARROW_DOWN)
+extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
+
+
+# Loop over games
+for i in range(3):
+	score = 0
+	while True:
+		a = np.random.rand()
+		if a < 0.25:
 			elem.send_keys(Keys.ARROW_DOWN)
-			extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
+		elif a < 0.5:
 			elem.send_keys(Keys.ARROW_LEFT)
-			extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
-		elem.send_keys(Keys.ARROW_RIGHT)
-		extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
+		elif a < 0.75:
+			elem.send_keys(Keys.ARROW_RIGHT)
+		else:
+			elem.send_keys(Keys.ARROW_UP)
+		a = driver.execute_script("return localStorage.getItem('gameState')")
+		
+		if a:
+			gameState = extractInfos(a)
+			score = gameState["score"]
+		else:
+			print(score)
+			break
+	driver.find_element_by_class_name("restart-button").click()
+		
 
-	time.sleep(10)
-	driver.close()
+time.sleep(10)
+driver.close()
