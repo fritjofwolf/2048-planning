@@ -58,18 +58,16 @@ def extractInfos(gameState):
 	return gameStateDict
 	
 	
+# Initialize Driver to interact with the website
 driver = webdriver.Firefox()
 driver.get("http://gabrielecirulli.github.io/2048/")
 elem = driver.find_element_by_class_name("grid-container")
-
-elem.send_keys(Keys.ARROW_DOWN)
-extractInfos(driver.execute_script("return localStorage.getItem('gameState')"))
-
 
 # Loop over games
 for i in range(3):
 	score = 0
 	while True:
+		# random key inputs
 		a = np.random.rand()
 		if a < 0.25:
 			elem.send_keys(Keys.ARROW_DOWN)
@@ -87,6 +85,7 @@ for i in range(3):
 		else:
 			print(score)
 			break
+	# start a new game
 	driver.find_element_by_class_name("restart-button").click()
 		
 
