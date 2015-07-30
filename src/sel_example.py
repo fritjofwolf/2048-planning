@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import sys
 import numpy as np
+import RL_Methods as rlm
 
 #a = '{"grid":{"size":4,"cells":[[null,null,null,null],[null,null,null,null],
 #[{"position":{"x":2,"y":0},"value":2},null,null,null],
@@ -57,37 +58,77 @@ def extractInfos(gameState):
 	
 	return gameStateDict
 	
+def makeMove(elem, move):
+	"""
+	sends the selected move to the website
+	"""
+	if move == 0:
+		elem.send_keys(Keys.ARROW_UP)
+	elif move == 1:
+		elem.send_keys(Keys.ARROW_RIGHT)
+	elif move == 2:
+		elem.send_keys(Keys.ARROW_DOWN)
+	else:
+		elem.send_keys(Keys.ARROW_LEFT)
+	
 	
 # Initialize Driver to interact with the website
 driver = webdriver.Firefox()
 driver.get("http://gabrielecirulli.github.io/2048/")
 elem = driver.find_element_by_class_name("grid-container")
 
-# Loop over games
-for i in range(3):
-	score = 0
-	while True:
-		# random key inputs
-		a = np.random.rand()
-		if a < 0.25:
-			elem.send_keys(Keys.ARROW_DOWN)
-		elif a < 0.5:
-			elem.send_keys(Keys.ARROW_LEFT)
-		elif a < 0.75:
-			elem.send_keys(Keys.ARROW_RIGHT)
-		else:
-			elem.send_keys(Keys.ARROW_UP)
-		a = driver.execute_script("return localStorage.getItem('gameState')")
+# initialize weights for action-value function
+weights = np.random.rand(17)
+oldFeatures = np.zeros(17)
+newFeatures = np.zeros(17)
+oldScore = 0
+newScore = 0
+epsilon = 0.9
+e = np.zeros(17)
+
+# Loop over episodes
+for i in range(100):
+	gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
+	gameState = extractInfos(gameStateRaw)
+	# Select next move
+	if np.random.rand() < epsilon: # exploration
+		move = np.random.randint(4)
+		makeMove(elem,move)
+	else: # exploitation
+		move = rlm.selectAction(gameState["grid"],weights)
+	oldScore = gameState["score"]
+	oldFeatures = rlm.makeFeatures(gameState["grid"], move)
+	makeMove(elem, move)
+	gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
+	
+	while gameStateRaw: # while game is not over
+		gameState = extractInfos(gameStateRaw)
+		newScore = gameState["score"]
 		
-		if a:
-			gameState = extractInfos(a)
-			score = gameState["score"]
-		else:
-			print(score)
-			break
+		# Select next move
+		if np.random.rand() < epsilon: # exploration
+			move = np.random.randint(4)
+		else: # exploitation
+			move = rlm.selectAction(gameState["grid"],weights)
+		newFeatures = rlm.makeFeatures(gameState["grid"], move)
+		
+		# Update action-value function
+		[weights,e] = rlm.updateAVFunction(weights, newScore-oldScore,oldFeatures, newFeatures,e)
+		weights = weights / np.linalg.norm(weights)
+		#print(oldFeatures)
+		#print(weights)
+		oldFeatures = newFeatures
+		oldScore = newScore
+		makeMove(elem, move)
+		gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
+		
+	print(oldScore)
 	# start a new game
 	driver.find_element_by_class_name("restart-button").click()
+	epsilon = epsilon * 0.99
 		
+print(weights)
 
 time.sleep(10)
 driver.close()
+
