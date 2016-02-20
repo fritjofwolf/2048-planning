@@ -44,10 +44,12 @@ def extractInfos(gameState):
 			continue
 		elif "position" in gridString[i]:
 			puffer = gridString[i+2]
-			grid[counter%4, counter//4] = int(puffer[8:-1])
+			grid[counter%4, counter//4] = int(np.log2(int(puffer[8:-1])))
 			counter += 1
 			
 	gameStateDict["grid"] = grid
+	#print(grid)
+	#time.sleep(3)
 	
 	# Extract other informations
 	gridString = gameState[1].split(",")
@@ -87,7 +89,11 @@ epsilon = 0.9
 e = np.zeros(17)
 
 # Loop over episodes
-for i in range(100):
+for i in range(30):
+	if i == 20:
+		print("Finished training")
+		epsilon = 0.05
+	
 	gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
 	gameState = extractInfos(gameStateRaw)
 	# Select next move
@@ -114,7 +120,7 @@ for i in range(100):
 		
 		# Update action-value function
 		[weights,e] = rlm.updateAVFunction(weights, newScore-oldScore,oldFeatures, newFeatures,e)
-		weights = weights / np.linalg.norm(weights)
+		#weights = weights / np.linalg.norm(weights)
 		#print(oldFeatures)
 		#print(weights)
 		oldFeatures = newFeatures
@@ -123,9 +129,10 @@ for i in range(100):
 		gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
 		
 	print(oldScore)
+	print(np.linalg.norm(weights))
 	# start a new game
 	driver.find_element_by_class_name("restart-button").click()
-	epsilon = epsilon * 0.99
+	epsilon = epsilon * 0.95
 		
 print(weights)
 
