@@ -3,4 +3,6 @@ from baseBot import BaseBot
 
 class RandomBot(BaseBot):
 	
-	def computeMove(self, 
+	def selectMove(self,infos):
+		move = np.random.randint(4)
+		return move

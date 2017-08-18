@@ -2,12 +2,11 @@ import numpy as np
 
 class BaseBot:
 	
-	def __init__(self):
-		"""
-		Creates an instance of the GreadyBot where depth is the number of
-		moves the bot "thinks" ahead
-		"""
-		self._depth = depth
+	# def __init__(self):
+	# 	"""
+	# 	Creates an instance of the GreadyBot where depth is the number of
+	# 	moves the bot "thinks" ahead
+	# 	"""
 	
 	def computeReward(self, grid, move):
 		"""
@@ -19,7 +18,7 @@ class BaseBot:
 		if move == 0:
 			for i in range(0,4):
 				for j in range(0,4):
-					
+					pass
 		elif move == 1:
 			elem.send_keys(Keys.ARROW_RIGHT)
 		elif move == 2:

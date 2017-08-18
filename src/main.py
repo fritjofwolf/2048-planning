@@ -1,36 +1,23 @@
-import IOManager
+from io2048.IOOnline import IOOnline
+from bots.RandomBot import RandomBot
+from bots.greedyBot import GreedyBot
+import time
+import sys
 
-# Initialize Driver to interact with the website
-driver = webdriver.Firefox()
-driver.get("http://gabrielecirulli.github.io/2048/")
-elem = driver.find_element_by_class_name("grid-container")
 
-summe = 0
-n = 10
-random = False
-# Greedy approach
-for i in range(n):
-	gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
-	gameState = extractInfos(gameStateRaw)
-	move = np.random.randint(4)
-	makeMove(elem,move)
-	print(gameState['grid'])
-	gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
-	while gameStateRaw:
-		gameState = extractInfos(gameStateRaw)
-		if (random):
-			move = np.random.randint(4)
-		else:
-			move = gm.selectMove(gameState["grid"])
-		makeMove(elem, move)
-		#time.sleep(1)
-		gameStateRaw = driver.execute_script("return localStorage.getItem('gameState')")
-		score = gameState["score"]
-	print(score)
-	summe += score
-	driver.find_element_by_class_name("restart-button").click()
+if __name__ == '__main__':
+	ioManager = IOOnline()
+	bot = RandomBot()
+	#bot = GreedyBot() 
 
-print("Average score is:", summe/n)
+	for i in range(1):
+		infos = ioManager.extractInfos()
+		while infos:
+			score = infos['score']
+			move = bot.selectMove(infos)
+			ioManager.makeMove(move)
+			infos = ioManager.extractInfos()
+		print(score)
 
-time.sleep(10)
-driver.close()
+	time.sleep(1)
+	ioManager.closeGame()

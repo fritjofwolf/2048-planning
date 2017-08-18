@@ -1,13 +1,18 @@
 import numpy as np
-
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 class IOOnline:
 	""" IOManager to interact with the website http://gabrielecirulli.github.io/2048/
 	where the 2048 game can be played online. This is naturally quite slow, so
-	for training an offline version of the game is used.
+	for training the reinforcement learning agent an offline version of the game is used.
 	"""
 
 	def __init__(self):
+		# Initialize Driver to interact with the website
+		self._driver = webdriver.Firefox()
+		self._driver.get("http://gabrielecirulli.github.io/2048/")
+		self._elem = self._driver.find_element_by_class_name("grid-container")
 		self._gameState = {}
 
 
@@ -24,7 +29,10 @@ class IOOnline:
 
 		"""
 		gameStateDict = {}
-		gameState = gameState[26:-1].split("]]},")
+		gameStateRaw = self._driver.execute_script("return localStorage.getItem('gameState')")
+		if not gameStateRaw:
+			return None
+		gameState = gameStateRaw[26:-1].split("]]},")
 
 		# Extract grid
 		gridString = gameState[0].replace("]","")
@@ -57,15 +65,21 @@ class IOOnline:
 
 		return gameStateDict
 
-	def makeMove(self, elem, move):
+	def restartGame(self):
+		self._driver.find_element_by_class_name("restart-button").click()
+
+	def closeGame(self):
+		self._driver.close()
+
+	def makeMove(self, move):
 		"""
 		sends the selected move to the website
 		"""
 		if move == 0:
-			elem.send_keys(Keys.ARROW_UP)
+			self._elem.send_keys(Keys.ARROW_UP)
 		elif move == 1:
-			elem.send_keys(Keys.ARROW_RIGHT)
+			self._elem.send_keys(Keys.ARROW_RIGHT)
 		elif move == 2:
-			elem.send_keys(Keys.ARROW_DOWN)
+			self._elem.send_keys(Keys.ARROW_DOWN)
 		else:
-			elem.send_keys(Keys.ARROW_LEFT)
+			self._elem.send_keys(Keys.ARROW_LEFT)

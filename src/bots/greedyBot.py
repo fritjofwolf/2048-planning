@@ -1,7 +1,7 @@
 import numpy as np
 from baseBot import BaseBot
 
-class GreadyBot(BaseBot):
+class GreedyBot(BaseBot):
 	
 	def __init__(self, depth):
 		"""
@@ -20,7 +20,7 @@ class GreadyBot(BaseBot):
 		if move == 0:
 			for i in range(0,4):
 				for j in range(0,4):
-					
+					pass
 		elif move == 1:
 			elem.send_keys(Keys.ARROW_RIGHT)
 		elif move == 2:
