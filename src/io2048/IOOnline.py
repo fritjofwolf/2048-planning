@@ -65,7 +65,7 @@ class IOOnline:
 
 		return gameStateDict
 
-	def restartGame(self):
+	def startNewGame(self):
 		self._driver.find_element_by_class_name("restart-button").click()
 
 	def closeGame(self):

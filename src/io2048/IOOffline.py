@@ -26,7 +26,10 @@ class IOOffline:
 				board - 4x4 array, which stores the numbers on the board
 
 		"""
-		return self._gameState
+		if self._gameState['over']:
+			return None
+		else:
+			return self._gameState
 
 	def startNewGame(self):
 		self._gameState = {"score": 0, 
