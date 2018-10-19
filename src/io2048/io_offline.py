@@ -26,7 +26,6 @@ class IOOffline:
     def _merge_row_cells_to_the_left(self, row):
         merged_row = np.zeros(4)
         shifted_row = row[row!=0]
-        print(shifted_row)
         shifted_row = np.append(shifted_row, [0]*(4-shifted_row.shape[0]))
         if shifted_row[0] == shifted_row[1] and shifted_row[2] != shifted_row[3]:
             merged_row[0] = 2*shifted_row[0]
@@ -39,6 +38,8 @@ class IOOffline:
             merged_row[0] = shifted_row[0]
             merged_row[1] = 2*shifted_row[1]
             merged_row[2] = shifted_row[3]
+        else:
+            merged_row = shifted_row
         return merged_row
 
     def _update_state(self, next_state, reward, done):
