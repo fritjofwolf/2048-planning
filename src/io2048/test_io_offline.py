@@ -19,6 +19,22 @@ def test_step():
 
 def test_merge_row_cells_to_the_left():
     io = IOOffline()
-    input_row = [1,2,3,4]
-    expected_output = [1,2,3,4]
-    assert(io._merge_row_cells_to_the_left(input_row) == expected_output)
+    input_row = np.array([1,1,2,2])
+    expected_output = np.array([2,4,0,0])
+    assert((io._merge_row_cells_to_the_left(input_row) == expected_output).all())
+
+    input_row = np.array([1,1,1,1])
+    expected_output = np.array([2,2,0,0])
+    assert((io._merge_row_cells_to_the_left(input_row) == expected_output).all())
+
+    input_row = np.array([0,0,0,2])
+    expected_output = np.array([2,0,0,0])
+    assert((io._merge_row_cells_to_the_left(input_row) == expected_output).all())
+
+    input_row = np.array([3,1,1,2])
+    expected_output = np.array([3,2,2,0])
+    assert((io._merge_row_cells_to_the_left(input_row) == expected_output).all())
+
+    input_row = np.array([1,2,3,4])
+    expected_output = np.array([1,2,3,4])
+    assert((io._merge_row_cells_to_the_left(input_row) == expected_output).all())
