@@ -93,3 +93,10 @@ def test_make_move():
     new_board, reward = io._make_move(0)
     assert((new_board == expected_board).all())
     assert(reward == expected_reward)
+
+def test_is_done():
+    io = IOOffline()
+    io._board = np.array([[ 4,  2,  4,  2], [32, 64, 16,  8], [16,  4, 32,  4], [ 4,  2,  8,  2]])
+    assert(io._is_done() == True)
+
+    
