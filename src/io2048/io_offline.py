@@ -21,7 +21,8 @@ class IOOffline:
             self._update_state(next_state, reward, done)
             return next_state, reward, done
         else:
-            return self._board, 0, self._done
+            done = self._is_done()
+            return self._board, 0, done
 
     def _is_done(self):
         for i in range(4):
