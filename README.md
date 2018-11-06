@@ -44,7 +44,18 @@ Following is a short description for all algorithms used in this project
 ## Results
 Algorithm | Average Score | Average Time
 ------------ | ------------- | -------------
-Random | 1100 | 1 sec
+Random | 1116 | 1 sec
+Rollout(1) | |
+Rollout(10) | |
+Rollout(25) | |
+Rollout(50) | |
+HeuristicSearch(1) | |
+HeuristicSearch(2) | |
+HeuristicSearch(3) | |
+MCTS(1) | |
+MCTS(10) | |
+MCTS(100) | |
+
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
