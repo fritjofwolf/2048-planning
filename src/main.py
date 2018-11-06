@@ -1,21 +1,23 @@
 import numpy as np
-import progressbar
 import time
 from io2048.io_offline import IOOffline
 from bots.random_bot import RandomBot
 from bots.rollout_bot import RolloutBot
+from multiprocessing import Pool
 
-def evaluate_bot(env, bot, iterations):
-    sum_score = 0
+def evaluate_bot(iterations, n_processors):
     start_time = time.time()
-    for i in progressbar.progressbar(range(iterations)):
-        sum_score += evaluate_single_run(env, bot)
+    p = Pool(2)
+    scores = p.map(evaluate_single_run, [iterations]*iterations)
+    p.close()
     stop_time = time.time()
-    average_score = sum_score / iterations
-    average_time = (stop_time - start_time) / iterations
+    average_score = sum(scores) / iterations
+    average_time = n_processors * (stop_time - start_time) / iterations
     return average_score, average_time
 
-def evaluate_single_run(env, bot):
+def evaluate_single_run(dummy):
+    global env
+    global bot
     score = 0
     state = env.reset()
     done = False
@@ -26,10 +28,12 @@ def evaluate_single_run(env, bot):
     return score
 
 if __name__ == '__main__':
-    # bot = RolloutBot(IOOffline(), RandomBot(), 10)
+    # bot = RolloutBot(IOOffline(), RandomBot(), 1)
     bot = RandomBot()
     env = IOOffline()
-    iterations = 1000
-    average_score, average_time = evaluate_bot(env, bot, iterations)
-    print('The average score was:', average_score)
-    print('The average time was:', average_time)
+    iterations = 100
+    n_processors = 2
+    cnt = 0
+    average_score, average_time = evaluate_bot(iterations, n_processors)
+    print('The average score per episode was:', average_score)
+    print('The average time per episode was:', average_time)
