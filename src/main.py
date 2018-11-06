@@ -1,15 +1,19 @@
 import numpy as np
 import progressbar
+import time
 from io2048.io_offline import IOOffline
 from bots.random_bot import RandomBot
 from bots.rollout_bot import RolloutBot
 
 def evaluate_bot(env, bot, iterations):
     sum_score = 0
+    start_time = time.time()
     for i in progressbar.progressbar(range(iterations)):
         sum_score += evaluate_single_run(env, bot)
+    stop_time = time.time()
     average_score = sum_score / iterations
-    return average_score
+    average_time = (stop_time - start_time) / iterations
+    return average_score, average_time
 
 def evaluate_single_run(env, bot):
     score = 0
@@ -26,5 +30,6 @@ if __name__ == '__main__':
     bot = RandomBot()
     env = IOOffline()
     iterations = 1000
-    average_score = evaluate_bot(env, bot, iterations)
-    print('Average reward was:', average_score)
+    average_score, average_time = evaluate_bot(env, bot, iterations)
+    print('The average score was:', average_score)
+    print('The average time was:', average_time)
