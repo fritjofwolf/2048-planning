@@ -1,9 +1,9 @@
 import numpy as np
 import time
+from multiprocessing import Pool
 from io2048.io_offline import IOOffline
 from bots.random_bot import RandomBot
 from bots.rollout_bot import RolloutBot
-from multiprocessing import Pool
 
 def evaluate_bot(iterations, n_processors):
     start_time = time.time()
