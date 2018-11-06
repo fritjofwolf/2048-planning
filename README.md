@@ -1,2 +1,5 @@
-# RL2048
-Reinforcement Learning Agent for the popular game 2048
+# 2048-planning
+Decision-time planning algorithms for the game 2048
+
+## Results
+
