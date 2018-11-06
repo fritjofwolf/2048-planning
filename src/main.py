@@ -1,51 +1,30 @@
-from io2048.IOOnline import IOOnline
-from io2048.IOOffline import IOOffline
-from bots.PolicyBasedLocalSearch import PolicyBasedLocalSearch as PolicyBot
-from bots.greedyBot import GreedyBot
-import time
-import sys
 import numpy as np
+import progressbar
+from io2048.io_offline import IOOffline
+from bots.random_bot import RandomBot
+from bots.rollout_bot import RolloutBot
 
+def evaluate_bot(env, bot, iterations):
+    sum_score = 0
+    for i in progressbar.progressbar(range(iterations)):
+        sum_score += evaluate_single_run(env, bot)
+    average_score = sum_score / iterations
+    return average_score
+
+def evaluate_single_run(env, bot):
+    score = 0
+    state = env.reset()
+    done = False
+    while not done:
+        action = bot.compute_next_action(state)
+        state, reward, done = env.step(action)
+        score += reward
+    return score
 
 if __name__ == '__main__':
-	#ioManager = IOOnline()
-	ioManager = IOOffline()
-	bot = PolicyBot()
-	#bot = GreedyBot() 
-	# print(ioManager.extractInfos())
-
-	bestScore = 0
-	bestScoreWeights1 = np.random.randn(16,16)
-	bestScoreWeights2 = np.random.randn(16,4)
-	
-	iterations = 2000
-	for i in range(1000):
-		currentScore = 0
-		currentWeights1 = bestScoreWeights1 + np.random.randn(16,16)
-		currentWeights2 = bestScoreWeights2 + np.random.randn(16,4)
-		bot.setWeights(currentWeights1,currentWeights2)
-		for j in range(iterations):
-			infos = ioManager.extractInfos()
-			while infos:
-				score = infos['score']
-				
-				#print(infos['grid'],infos['score'])
-				move = bot.selectMove(infos)
-				#print(move)
-				ioManager.makeMove(move)
-				infos = ioManager.extractInfos()
-				#print(infos['grid'])
-			#print(infos)
-			currentScore += score
-			ioManager.startNewGame()
-			
-		currentScore /= iterations
-		print('currentScore is ',currentScore)
-		if currentScore > bestScore:
-			bestScoreWeights1 = currentWeights1
-			bestScoreWeights2 = currentWeights2
-			bestScore = currentScore
-
-	print('bestScore and weights', bestScore, bestScoreWeights1, bestScoreWeights2)
-	#time.sleep(1)
-	ioManager.closeGame()
+    # bot = RolloutBot(IOOffline(), RandomBot(), 10)
+    bot = RandomBot()
+    env = IOOffline()
+    iterations = 1000
+    average_score = evaluate_bot(env, bot, iterations)
+    print('Average reward was:', average_score)
