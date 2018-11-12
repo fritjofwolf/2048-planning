@@ -7,13 +7,14 @@ from bots.rollout_bot import RolloutBot
 
 def evaluate_bot(iterations, n_processors):
     start_time = time.time()
-    p = Pool(2)
+    p = Pool(n_processors)
     scores = p.map(evaluate_single_run, [iterations]*iterations)
     p.close()
     stop_time = time.time()
+    total_time = (stop_time -start_time)
     average_score = sum(scores) / iterations
     average_time = n_processors * (stop_time - start_time) / iterations
-    return average_score, average_time
+    return total_time, average_score, average_time
 
 def evaluate_single_run(dummy):
     global env
@@ -32,8 +33,9 @@ if __name__ == '__main__':
     bot = RandomBot()
     env = IOOffline()
     iterations = 100
-    n_processors = 2
+    n_processors = 4
     cnt = 0
-    average_score, average_time = evaluate_bot(iterations, n_processors)
+    total_time, average_score, average_time = evaluate_bot(iterations, n_processors)
+    print('The total time was:', total_time)
     print('The average score per episode was:', average_score)
     print('The average time per episode was:', average_time)
