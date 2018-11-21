@@ -41,6 +41,16 @@ class MCTSBot():
     def _initialize_tree(self, state):
         self._tree = Node(state, None, [])
 
+    def _select_leaf_node(self):
+        current_node = self._tree
+        while current_node._children != []:
+            max_action = np.argmax(current_node._action_values)
+            # todo
+            #create next state with certian _action_values
+
+            current_node = current_node._children[max_action]
+        return current_node
+
 
     def _compute_next_states_with_fixed_tile(self, afterstate, tile_value):
         free_tiles = np.where(afterstate == 0)
