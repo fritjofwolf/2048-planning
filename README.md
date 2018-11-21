@@ -58,16 +58,15 @@ It is important to note, that the times of the runs with higher hyperparameters 
 Algorithm | Average Score | Average Time (sec)
 ------------ | ------------- | -------------
 Random | 1116 | 0.05
-Rollout(1) | |
-Rollout(10) | |
-Rollout(25) | |
-Rollout(50) | |
-HeuristicSearch(1) | |
-HeuristicSearch(2) | |
-HeuristicSearch(3) | |
-MCTS(1) | |
-MCTS(10) | |
-MCTS(100) | |
+Rollout(1) | 5252 | 31
+Rollout(2) | 7060 | 73
+Rollout(5)* | 11928 | 292
+Rollout(10)* | 17227 | 646
+Rollout(20)* | 32569 | 1949
+Rollout(50)* | 36303 | 6060
+HeuristicSearch(1)* | |
+HeuristicSearch(2)* | |
+HeuristicSearch(3)* | |
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
