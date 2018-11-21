@@ -11,15 +11,8 @@ class RolloutBot():
     def compute_next_action(self, state):
         action_values = np.zeros(4)
         self._state = state
-
-        # p = Pool(4)
-        # action_values = p.map(self._compute_action_value, [0,1,2,3])
-        # p.close()
-
         for action in range(4):
             action_values[action] = self._compute_action_value(action)
-        print(state)
-        print(action_values)
         return np.argmax(action_values)
 
     def _compute_action_value(self, action):
