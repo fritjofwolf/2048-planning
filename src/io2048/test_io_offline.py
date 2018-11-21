@@ -94,6 +94,15 @@ def test_make_move():
     assert((new_board == expected_board).all())
     assert(reward == expected_reward)
 
+    io._board = np.array([[8, 2, 0, 0,],[8, 2, 0, 0,],[2, 8, 2, 0,],[2, 4, 2, 0,]])
+    expected_board = np.array([[16,4,4,0],[4,8,0,0],[0,4,0,0],[0,0,0,0]])
+    expected_reward = 28
+    new_board, reward = io._make_move(0)
+    assert((new_board == expected_board).all())
+    assert(reward == expected_reward)
+
+    
+
 def test_is_done():
     io = IOOffline()
     io._board = np.array([[ 4,  2,  4,  2], [32, 64, 16,  8], [16,  4, 32,  4], [ 4,  2,  8,  2]])

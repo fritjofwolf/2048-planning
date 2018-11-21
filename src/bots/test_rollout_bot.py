@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-from main2 import RolloutBot
-from main2 import RandomBot
+from bots.rollout_bot import RolloutBot
+from bots.random_bot import RandomBot
 from io2048.io_offline import IOOffline
 
 def test_compute_next_action():
