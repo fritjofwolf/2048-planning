@@ -58,14 +58,18 @@ It is important to note, that the times of the runs with higher hyperparameters 
 Algorithm | Average Score | Average Time (sec)
 ------------ | ------------- | -------------
 Random | 1116 | 0.05
-Rollout(1) | 5252 | 31
-Rollout(2) | 7060 | 73
-Rollout(5)* | 11928 | 292
-Rollout(10)* | 17227 | 646
-Rollout(20)* | 32569 | 1949
-Rollout(50)* | 36303 | 6060
-HeuristicSearch(1)* | |
-HeuristicSearch(2)* | |
+Rollout(1, Random) | 5252 | 31
+Rollout(2, Random) | 7060 | 73
+Rollout(5, Random)* | 11928 | 292
+Rollout(10, Random)* | 17227 | 646
+Rollout(20, Random)* | 32569 | 1949
+Rollout(50, Random)* | 36303 | 6060
+Rollout(1, Greedy) ||
+Rollout(2, Greedy) ||
+Rollout(5, Greedy) ||
+Rollout(10, Greedy) ||
+HeuristicSearch(1) | 2104 | 0.19
+HeuristicSearch(2) | 7771 | 15
 HeuristicSearch(3)* | |
 
 ## License
