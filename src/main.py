@@ -4,6 +4,8 @@ from multiprocessing import Pool
 from io2048.io_offline import IOOffline
 from bots.random_bot import RandomBot
 from bots.rollout_bot import RolloutBot
+from bots.heuristic_search_bot import HeuristicSearchBot
+import time
 
 def evaluate_bot(iterations, n_processors):
     start_time = time.time()
@@ -23,16 +25,23 @@ def evaluate_single_run(dummy):
     state = env.reset()
     done = False
     while not done:
+        # print(state)
+        # print(env._board)
         action = bot.compute_next_action(state)
-        state, reward, done = env.step(action)
+        # print('Ausgewählte Aktion ist', action)
+        #time.sleep(1)
+        state, reward, done = env.step(action[0])
+        # print(score)
+        # print('Done', done)
         score += reward
     return score
 
 if __name__ == '__main__':
-    # bot = RolloutBot(IOOffline(), RandomBot(), 1)
-    bot = RandomBot()
+    #bot = RolloutBot(IOOffline(), RandomBot(), 1)
+    bot = HeuristicSearchBot(3)
+    #bot = RandomBot()
     env = IOOffline()
-    iterations = 100
+    iterations = 4
     n_processors = 4
     cnt = 0
     total_time, average_score, average_time = evaluate_bot(iterations, n_processors)

@@ -1,16 +1,16 @@
 import numpy as np
 
-class HeuristicSearchBot():
+class HeuristicSearchBot:
 
-    def __init__(self):
+    def __init__(self, depth):
         self._state = np.zeros((4,4))
+        self._depth = depth
 
-    def compute_next_action(self, state, depth=1):
-        
-        if depth == 3 and (state == self._state).all():
+    def compute_next_action(self, state, depth=3):
+        if depth == self._depth and (state == self._state).all():
             return np.random.randint(4), 0
-        if depth == 3:
-            self._state = state
+        if depth == self._depth:
+            self._state = state.copy()
         afterstates, action_values = self._compute_afterstates(state)
         if self._is_not_a_leaf(depth):
             action_values += [self._compute_expected_reward(x, depth) for x in afterstates]
