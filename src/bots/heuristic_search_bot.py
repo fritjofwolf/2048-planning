@@ -6,11 +6,18 @@ class HeuristicSearchBot:
         self._state = np.zeros((4,4))
         self._depth = depth
 
-    def compute_next_action(self, state, depth=3):
-        if depth == self._depth and (state == self._state).all():
-            return np.random.randint(4), 0
-        if depth == self._depth:
-            self._state = state.copy()
+    def compute_next_action(self, state):
+        if (state == self._state).all():
+            return np.random.randint(4)
+        self._state = state.copy()
+        afterstates, action_values = self._compute_afterstates(state)
+        if self._is_not_a_leaf(self._depth):
+            action_values += [self._compute_expected_reward(x, self._depth) for x in afterstates]
+        action, value = self._select_action(action_values)
+        return action
+
+    
+    def compute_next_action_with_value(self, state, depth):
         afterstates, action_values = self._compute_afterstates(state)
         if self._is_not_a_leaf(depth):
             action_values += [self._compute_expected_reward(x, depth) for x in afterstates]
@@ -21,8 +28,8 @@ class HeuristicSearchBot:
     def _compute_expected_reward(self, afterstate, depth):
         next_states_with_2 = self._compute_next_states_with_fixed_tile(afterstate, 2)
         next_states_with_4 = self._compute_next_states_with_fixed_tile(afterstate, 4)
-        action_values_with_2 = [self.compute_next_action(x, depth-1)[1] for x in next_states_with_2]
-        action_values_with_4 = [self.compute_next_action(x, depth-1)[1] for x in next_states_with_4]
+        action_values_with_2 = [self.compute_next_action_with_value(x, depth-1)[1] for x in next_states_with_2]
+        action_values_with_4 = [self.compute_next_action_with_value(x, depth-1)[1] for x in next_states_with_4]
         afterstate_value = self._compute_afterstate_value(action_values_with_2, action_values_with_4)
         return afterstate_value
 
