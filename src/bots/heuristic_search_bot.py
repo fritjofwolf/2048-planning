@@ -28,7 +28,13 @@ class HeuristicSearchBot:
 
 
     def _compute_afterstate_value(self, action_values_with_2, action_values_with_4):
-        return 0.9 * np.mean(action_values_with_2) + 0.1 * np.mean(action_values_with_4)
+        mean_2 = 0
+        mean_4 = 0
+        if action_values_with_2 != []:
+            mean_2 = np.mean(action_values_with_2)
+        if action_values_with_4 != []:
+            mean_4 =  np.mean(action_values_with_4)
+        return 0.9 *  mean_2 + 0.1 * mean_4
 
 
     def _compute_next_states_with_fixed_tile(self, afterstate, tile_value):
