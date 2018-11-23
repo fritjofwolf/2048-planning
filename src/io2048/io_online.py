@@ -10,8 +10,8 @@ class IOOnline:
 
     def __init__(self):
         self._driver = webdriver.Firefox()
-        self._driver.get("http://gabrielecirulli.github.io/2048/")
-        self._elem = self._driver.find_element_by_class_name("grid-container")
+        self._driver.get("https://play2048.co/")
+        self._elem = self._driver.find_element_by_tag_name("body")
         self._score = 0
 
 
