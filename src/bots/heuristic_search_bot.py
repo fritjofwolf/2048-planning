@@ -1,16 +1,23 @@
 import numpy as np
 
-class HeuristicSearchBot():
+class HeuristicSearchBot:
 
-    def __init__(self):
+    def __init__(self, depth):
         self._state = np.zeros((4,4))
+        self._depth = depth
 
-    def compute_next_action(self, state, depth=1):
-        
-        if depth == 3 and (state == self._state).all():
-            return np.random.randint(4), 0
-        if depth == 3:
-            self._state = state
+    def compute_next_action(self, state):
+        if (state == self._state).all():
+            return np.random.randint(4)
+        self._state = state.copy()
+        afterstates, action_values = self._compute_afterstates(state)
+        if self._is_not_a_leaf(self._depth):
+            action_values += [self._compute_expected_reward(x, self._depth) for x in afterstates]
+        action, value = self._select_action(action_values)
+        return action
+
+    
+    def compute_next_action_with_value(self, state, depth):
         afterstates, action_values = self._compute_afterstates(state)
         if self._is_not_a_leaf(depth):
             action_values += [self._compute_expected_reward(x, depth) for x in afterstates]
@@ -21,14 +28,20 @@ class HeuristicSearchBot():
     def _compute_expected_reward(self, afterstate, depth):
         next_states_with_2 = self._compute_next_states_with_fixed_tile(afterstate, 2)
         next_states_with_4 = self._compute_next_states_with_fixed_tile(afterstate, 4)
-        action_values_with_2 = [self.compute_next_action(x, depth-1)[1] for x in next_states_with_2]
-        action_values_with_4 = [self.compute_next_action(x, depth-1)[1] for x in next_states_with_4]
+        action_values_with_2 = [self.compute_next_action_with_value(x, depth-1)[1] for x in next_states_with_2]
+        action_values_with_4 = [self.compute_next_action_with_value(x, depth-1)[1] for x in next_states_with_4]
         afterstate_value = self._compute_afterstate_value(action_values_with_2, action_values_with_4)
         return afterstate_value
 
 
     def _compute_afterstate_value(self, action_values_with_2, action_values_with_4):
-        return 0.9 * np.mean(action_values_with_2) + 0.1 * np.mean(action_values_with_4)
+        mean_2 = 0
+        mean_4 = 0
+        if action_values_with_2 != []:
+            mean_2 = np.mean(action_values_with_2)
+        if action_values_with_4 != []:
+            mean_4 =  np.mean(action_values_with_4)
+        return 0.9 *  mean_2 + 0.1 * mean_4
 
 
     def _compute_next_states_with_fixed_tile(self, afterstate, tile_value):

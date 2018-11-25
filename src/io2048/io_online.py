@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 class IOOnline:
-    """ IOManager to interact with the website http://gabrielecirulli.github.io/2048/
+    """ IOManager to interact with the website https://play2048.co/
     where the 2048 game can be played online. This is naturally quite slow, so
     for training the reinforcement learning agent an offline version of the game is used.
     """
