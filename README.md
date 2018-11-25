@@ -37,15 +37,17 @@ python src/main.py
 ## Algorithms
 Following is a short description for all algorithms used in this project. If not stated otherwise the informations were taken from Chapter 8 of the book ["Reinforcement Learning - An Introduction"](https://drive.google.com/file/d/1opPSz5AZ_kVa1uWOdOiveNiBFiEOHjkG/view) by Sutton and Barto.
 
-### Random Bot
+### Planning Algorithms
 
-### Heuristic Search Bot
+#### Heuristic Search Bot
 
-### Rollout Bot
+#### Rollout Bot
 
-### Monte-Carlo Tree Search Bot
+### Learning Algorithms
+#### Deep Neuro Evolution
 
 ## Results
+### Planning Algorithms
 The table shows some results for the various bots with different settings of the hyperparameter. The meaning of the hyperparameter for the different bots are:
 - Rollout Bot: Number of rollout per action
 - Heuristic Search Bot: Depth of the search tree
@@ -55,7 +57,7 @@ The bots theirselves only use one core, but the evaluation function uses more co
 
 It is important to note, that the times of the runs with higher hyperparameters take much longer. This has two reasons. First, the computation of the next move is more demanding with a deeper tree or more rollouts. Second, the time the game 2048 needs to terminate is not fixed. It highly depends on the skill of the player (or bot in this scenario). So the better the bot, the longer it can play the game.
 
-Algorithm | Average Score | Average Time (sec)
+Algorithm | Score | Execution Time (sec)
 ------------ | ------------- | -------------
 Random | 1116 | 0.05
 Rollout(1, Random) | 5252 | 31
@@ -64,13 +66,22 @@ Rollout(5, Random)* | 11928 | 292
 Rollout(10, Random)* | 17227 | 646
 Rollout(20, Random)* | 32569 | 1949
 Rollout(50, Random)* | 36303 | 6060
-Rollout(1, Greedy) ||
-Rollout(2, Greedy) ||
-Rollout(5, Greedy) ||
-Rollout(10, Greedy) ||
+Rollout(1, HeuristicSearch(1)) | 5617 | 136
+Rollout(2, HeuristicSearch(1)) | 8252 | 410
+Rollout(5, HeuristicSearch(1)) |10882 | 1047
 HeuristicSearch(1) | 2104 | 0.19
 HeuristicSearch(2) | 7771 | 15
-HeuristicSearch(3)* | |
+HeuristicSearch(3)* | 9209 | 1157
+
+
+### Learning Algorithms
+Here is a section about the learning algorithms.
+
+Algorithm | Average Score | Training Time (sec)
+----------- | --------------- | ----------------
+DeepNeuroEvolution ||
+Asynchronous Q-Learning ||
+Deep Q-Network ||
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
