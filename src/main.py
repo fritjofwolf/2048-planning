@@ -25,23 +25,17 @@ def evaluate_single_run(dummy):
     state = env.reset()
     done = False
     while not done:
-        # print(state)
-        # print(env._board)
         action = bot.compute_next_action(state)
-        # print('Ausgewählte Aktion ist', action)
-        #time.sleep(1)
-        state, reward, done = env.step(action[0])
-        # print(score)
-        # print('Done', done)
+        state, reward, done = env.step(action)
         score += reward
     return score
 
 if __name__ == '__main__':
-    #bot = RolloutBot(IOOffline(), RandomBot(), 1)
-    bot = HeuristicSearchBot(3)
+    bot = RolloutBot(IOOffline(), HeuristicSearchBot(1), 5)
+    #bot = HeuristicSearchBot(2)
     #bot = RandomBot()
     env = IOOffline()
-    iterations = 4
+    iterations = 20
     n_processors = 4
     cnt = 0
     total_time, average_score, average_time = evaluate_bot(iterations, n_processors)
