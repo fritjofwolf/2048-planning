@@ -19,7 +19,11 @@ Now you can easily install all necessary packages using the requirements.txt fil
 pip install -r requirements.txt
 ```
 ### Gecko Driver and Selenium
-The online bot is currently not working, due to a bug in either Firefox or Selenium... 
+In order to interact with the 2048 online version, you first need to download the geckodriver. You can find the latest releases for different operating systems [here](https://github.com/mozilla/geckodriver/releases). Then you need to add the folder where the geckodriver was downloaded to your path. On Unix systems that can be done via:
+```
+export PATH=$PATH:/path/to/directory/of/executable/downloaded/in/previous/step
+``` 
+Last you have to make sure to set the n_processors in the main-script to one. Otherwise all processes will interact with the same version of the 2048 webpage.
 
 ### Running Tests
 To check if the installation was successful you can simply run all the unittests using pytest from the project root
