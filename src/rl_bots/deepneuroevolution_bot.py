@@ -36,7 +36,8 @@ class DeepNeuroevolution():
     
     def _evaluate_population(self):
         for idx, mlp in enumerate(self._current_population):
-            score = self._evaluate_network(mlp[0], 10)
+            print('Evaluation of Network', idx)
+            score = self._evaluate_network(mlp[0], 20)
             self._current_population[idx][1] = score
     
     
@@ -45,10 +46,15 @@ class DeepNeuroevolution():
         env = self._env
         for _ in range(iterations):
             state = env.reset()
+            old_state = None
             done = False
             while not done:
                 state = self._preprocess_state(state)
-                action = np.random.choice(self._n_actions, p=mlp.predict([state])[0])
+                if (state == old_state).all():
+                    action = np.random.randint(4)
+                else:
+                    action = np.random.choice(self._n_actions, p=mlp.predict([state])[0])
+                old_state = state
                 state, reward, done = env.step(action)
                 score += reward
         return score / iterations
@@ -61,7 +67,7 @@ class DeepNeuroevolution():
     def _create_first_population(self):
         self._current_population = []
         for _ in range(self._n_individuals):
-            mlp = MLPRegressor(hidden_layer_sizes = (10,), alpha=10**-10, max_iter=1)
+            mlp = MLPRegressor(hidden_layer_sizes = self._nn_architecture, alpha=10**-10, max_iter=1)
             mlp.fit([np.random.randn(self._n_features)], [np.random.randn(self._n_actions)])
             mlp.out_activation_ = 'softmax'
             self._current_population.append([mlp,0])
@@ -70,7 +76,8 @@ class DeepNeuroevolution():
     def _create_parents(self):
         parents = sorted(self._current_population, key=lambda x: -x[1])[:self._n_parents]
         for idx, mlp in enumerate(parents):
-            score = self._evaluate_network(mlp[0], 100)
+            print('Evaluation of parent', idx)
+            score = self._evaluate_network(mlp[0], 50)
             parents[idx][1] = score
         parents.sort(key=lambda x:-x[1])
         return parents
@@ -87,7 +94,7 @@ class DeepNeuroevolution():
     
     
     def _create_new_nn(self, weights, biases):
-        mlp = MLPRegressor(hidden_layer_sizes = (10,), alpha=10**-10, max_iter=1)
+        mlp = MLPRegressor(hidden_layer_sizes = self._nn_architecture, alpha=10**-10, max_iter=1)
         mlp.fit([np.random.randn(self._n_features)], [np.random.randn(self._n_actions)])
         mlp.coefs_ = weights
         mlp.intercepts_ = biases
