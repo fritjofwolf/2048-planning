@@ -47,11 +47,16 @@ class DeepNeuroevolution():
             state = env.reset()
             done = False
             while not done:
+                state = self._preprocess_state(state)
                 action = np.random.choice(self._n_actions, p=mlp.predict([state])[0])
-                state, reward, done, info = env.step(action)
+                state, reward, done = env.step(action)
                 score += reward
         return score / iterations
     
+    def _preprocess_state(self, state):
+        new_state = state.flatten()
+        new_state /= 2048
+        return new_state
     
     def _create_first_population(self):
         self._current_population = []
