@@ -1,9 +1,9 @@
 # 2048-planning
 Decision-time planning algorithms for the game 2048 (https://play2048.co/)
 
-<p style="text-align:center;">
-<img src="https://github.com/fritjofwolf/2048-planning/blob/master/media/sample_game.gif" width="300" height="300"/>
-</p>
+<center>
+    <img src="https://github.com/fritjofwolf/2048-planning/blob/master/media/sample_game.gif" width="300" height="300"/>
+</center>
 
 Also includes an offline game engine and a driver for the online game based on Selenium
 
