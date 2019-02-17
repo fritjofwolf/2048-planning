@@ -109,9 +109,9 @@ class DeepNeuroevolution():
         new_biases = []
         for weight in weights:
             shape = weight.shape
-            new_weights.append(weight + 100*np.random.randn(shape[0], shape[1]))
+            new_weights.append(weight + 10*np.random.randn(shape[0], shape[1]))
         for bias in biases:
-            new_biases.append(bias + 100*np.random.randn(bias.shape[0]))
+            new_biases.append(bias + 10*np.random.randn(bias.shape[0]))
         return new_weights, new_biases
     
         
