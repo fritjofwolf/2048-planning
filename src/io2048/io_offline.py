@@ -11,7 +11,7 @@ class IOOffline:
         self._done = False
         self._board = self._add_new_tile(self._board)
         self._board = self._add_new_tile(self._board)
-        return self._board
+        return self._board.flatten() / 2048
 
     def step(self, action):
         tmp_state, reward = self._make_move(action)
