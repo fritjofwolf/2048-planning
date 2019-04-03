@@ -3,3 +3,4 @@ venv
 .pytest_cache
 geckodriver.log
 .vscode/settings.json
+src/.ipynb_checkpoints/ppo_results-checkpoint.ipynb
