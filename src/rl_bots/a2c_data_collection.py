@@ -56,6 +56,7 @@ class A2CDataCollector():
             batch_obs.append(obs.copy())
             act = self._sess.run(self._actions, {self._obs_ph: obs.reshape(1,-1)})[0]
             obs, rew, done, info = env.step(act)
+            # print(obs)
             batch_new_obs.append(obs.copy())
             batch_terminal.append(float(done))
             batch_acts.append(act)
