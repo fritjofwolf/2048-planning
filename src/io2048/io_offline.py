@@ -19,10 +19,10 @@ class IOOffline:
             next_state = self._add_new_tile(tmp_state)
             done = self._is_done()
             self._update_state(next_state, reward, done)
-            return next_state, reward, done, None
+            return next_state.flatten() / 2048, reward, done, None
         else:
             done = self._is_done()
-            return self._board, 0, done, None
+            return self._board.flatten() / 2048 , 0, done, None
 
     def _is_done(self):
         for i in range(4):
