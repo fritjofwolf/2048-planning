@@ -4,15 +4,12 @@ from multiprocessing import Pool
 from io2048.io_offline import IOOffline
 from bots.random_bot import RandomBot
 from bots.rollout_bot import RolloutBot
-from rl_bots.deepneuroevolution_bot import DeepNeuroevolution
+from rl_bots.ppo import PPO
 
 if __name__ == '__main__':
     # bot = RolloutBot(IOOffline(), RandomBot(), 1)
-    n_features = 16
-    n_actions = 4
-    env = IOOffline()
-    dne = DeepNeuroevolution(env, 20, 5, n_features, n_actions, (10,), 2000)
-    dne.find_optimal_network()
+    ppo_agent = PPO()
+    ppo_agent.train(100)
     # iterations = 100
     # n_processors = 4
     # cnt = 0
@@ -23,5 +20,3 @@ if __name__ == '__main__':
 
 
 
-
-dne.find_optimal_network()
