@@ -6,6 +6,7 @@ class A2CDataCollector():
     
     def __init__(self, sess, actions, obs_ph, n_actors, n_samples):
         self._sess = sess
+        self._result_path = '/home/janus/2048_results.txt'
         self._envs = [IOOffline() for _ in range(n_actors)]
         self._states = [env.reset() for env in self._envs]
         self._actor_rews = [[] for _ in range(n_actors)]
@@ -67,6 +68,8 @@ class A2CDataCollector():
                 ep_ret = sum(self._actor_rews[env_id])
                 self._returns.append(ep_ret)
                 self._lens.append(ep_len)
+                with open(self._result_path, 'a+') as fp:
+                    fp.write(str(ep_ret) + ' ' + str(ep_len) + '\n')
                 self._actor_rews[env_id] = []
                 
 #                 if ep_len == 200:
