@@ -52,9 +52,13 @@ class PPO():
 
 
     def _save_model(self):
+        if self._model_path:
+            saving_path = self._model_path
+        else:
+            saving_path = '/home/janus/models/'
         with self._sess.as_default():
-            self._graph[5].save(self._model_path+'policy_network.h5')
-            self._graph[7].save(self._model_path+'state_network.h5')
+            self._graph[5].save(saving_path+'policy_network.h5')
+            self._graph[7].save(saving_path+'state_network.h5')
         print('Models saved')
 
 
@@ -91,7 +95,7 @@ class PPO():
 
         # make loss function whose gradient, for the right data, is policy gradient
         obs_logits = policy_network(obs_ph)
-        obs_logits_old_network = policy_network(obs_ph)
+        obs_logits_old_network = old_policy_network(obs_ph)
         actions = tf.squeeze(tf.multinomial(logits=obs_logits,num_samples=1), axis=1)
         action_masks = tf.one_hot(act_ph, self._n_acts)
         selected_action_probs = tf.reduce_sum(action_masks * tf.nn.softmax(obs_logits), axis=1)
@@ -114,60 +118,6 @@ class PPO():
 
         self._graph = [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, \
                         policy_network, old_policy_network, actions, train_policy, train_state_value]
-
-    def _build_computational_graph_continuous_actions(self):
-        pass
-        # # define placeholder
-        # obs_ph = tf.placeholder(shape=(None, self._obs_dim), dtype=tf.float32)
-        # act_ph = tf.placeholder(shape=(None,self._n_acts), dtype=tf.float32)
-        # new_obs_ph = tf.placeholder(shape=(None, self._obs_dim), dtype=tf.float32)
-        # rew_ph = tf.placeholder(shape=(None,1), dtype=tf.float32)
-        # terminal_ph = tf.placeholder(shape=(None,1), dtype=tf.float32)
-
-        # # build networks
-        # policy_network = self._build_network('tanh', self._n_acts)
-        # old_policy_network = self._build_network('tanh', self._n_acts)
-        # state_value_network = self._build_network('relu', 1)
-        
-        # state_value = state_value_network(obs_ph)
-        # new_state_value = state_value_network(new_obs_ph)
-        # td_target = rew_ph + self._gamma * new_state_value * (1-terminal_ph)
-
-        # log_std = tf.Variable(-0.5)
-        # std = tf.math.exp(log_std)
-
-        # # make loss function whose gradient, for the right data, is policy gradient
-        # obs_logits = policy_network(obs_ph)
-        # obs_logits_old_network = policy_network(obs_ph)
-        # tfd = tfp.distributions
-        # dist = tfd.Normal(loc=obs_logits, scale=np.ones(self._n_acts)*std)
-        # actions = dist.sample(1)[0]
-
-        # Z = (2*np.pi*std**2)**0.5
-        # selected_action_probs = tf.math.exp(-0.5*(act_ph - obs_logits)**2 / std**2) / Z
-        # selected_action_probs_old_network = tf.math.exp(-0.5*(act_ph - obs_logits_old_network)**2 / std**2) / Z
-
-        # # action_masks = tf.one_hot(act_ph, self._n_acts)
-        # # selected_action_probs = tf.reduce_sum(action_masks * tf.nn.softmax(obs_logits), axis=1)
-        # # selected_action_probs_old_network = tf.reduce_sum(action_masks * tf.nn.softmax(obs_logits_old_network), axis=1)
-
-        # r = selected_action_probs / tf.stop_gradient(selected_action_probs_old_network)
-        # advantages = td_target - state_value
-        # factor = 1 + 0.2 * tf.math.sign(advantages)
-        # x = tf.math.minimum(advantages*r, advantages*factor)
-        # policy_loss = -tf.reduce_mean(x)
-
-        # state_value_loss = tf.losses.mean_squared_error(tf.stop_gradient(td_target), state_value)
-
-        # policy_optimizer = tf.train.AdamOptimizer(self._learning_rate)
-        # state_value_optimizer = tf.train.AdamOptimizer(self._learning_rate)
-        # train_policy = policy_optimizer.minimize(policy_loss)
-        # train_state_value = state_value_optimizer.minimize(state_value_loss)
-        # self._sess = tf.Session()
-        # self._sess.run(tf.global_variables_initializer())
-
-        # self._graph = [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, \
-        #                 policy_network, old_policy_network, actions, train_policy, train_state_value]
 
 
     def _build_network(self, activation = 'relu', n_output_units = 1):
