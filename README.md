@@ -86,15 +86,5 @@ HeuristicSearch(1) | 2104 | 0.19
 HeuristicSearch(2) | 7771 | 15
 HeuristicSearch(3)* | 9209 | 1157
 
-
-### Learning Algorithms
-Here is a section about the learning algorithms.
-
-Algorithm | Average Score | Training Time (sec)
------------ | --------------- | ----------------
-DeepNeuroEvolution ||
-Asynchronous Q-Learning ||
-Deep Q-Network ||
-
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
