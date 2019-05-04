@@ -71,9 +71,6 @@ class A2CDataCollector():
                 with open(self._result_path, 'a+') as fp:
                     fp.write(str(ep_ret) + ' ' + str(ep_len) + '\n')
                 self._actor_rews[env_id] = []
-                
-#                 if ep_len == 200:
-#                     batch_terminal[-1] = 0.0
                 obs, done= env.reset(), False
         self._states[env_id] = obs
         return batch_obs, batch_acts, batch_new_obs, batch_rews, batch_terminal
