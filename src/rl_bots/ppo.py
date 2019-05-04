@@ -14,7 +14,7 @@ class PPO():
     agent of 2048 that is contained in this repo. (due to the fact that it is
     not an official gym environment)
     '''
-    def __init__(self, gamma = 0.9, learning_rate = 0.0003, model_path = '/home/janus/models/'):
+    def __init__(self, gamma = 0.9, learning_rate = 0.0003, model_path = None):
         self._env = IOOffline()
         self._model_path = model_path
         self._learning_rate = learning_rate
