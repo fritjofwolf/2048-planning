@@ -14,8 +14,9 @@ class PPO():
     agent of 2048 that is contained in this repo. (due to the fact that it is
     not an official gym environment)
     '''
-    def __init__(self, gamma = 0.9, learning_rate = 0.0003):
+    def __init__(self, gamma = 0.9, learning_rate = 0.0003, model_path = '/home/janus/models/'):
         self._env = IOOffline()
+        self._model_path = model_path
         self._learning_rate = learning_rate
         self._gamma = gamma
         self._obs_dim = 16
@@ -46,7 +47,16 @@ class PPO():
                                             rew_ph: np.array(rews).reshape(-1, 1),
                                             terminal_ph: np.array(terminal).reshape(-1, 1)
                                         })
+        self._save_model()
         return data_collector.get_episode_statistics()
+
+
+    def _save_model(self):
+        with self._sess.as_default():
+            self._graph[5].save(self._model_path+'policy_network.h5')
+            self._graph[7].save(self._model_path+'state_network.h5')
+        print('Models saved')
+
 
     def _update_old_network(self):
         policy_network = self._graph[5]
@@ -61,10 +71,19 @@ class PPO():
         rew_ph = tf.placeholder(shape=(None,1), dtype=tf.float32)
         terminal_ph = tf.placeholder(shape=(None,1), dtype=tf.float32)
 
-        # build networks
-        policy_network = self._build_network('tanh', self._n_acts)
-        old_policy_network = self._build_network('tanh', self._n_acts)
-        state_value_network = self._build_network('relu', 1)
+        self._sess = tf.Session()
+        if self._model_path:
+            print('Models loaded')
+            with self._sess.as_default():
+                policy_network = load_model(self._model_path+'/policy_network.h5')
+                old_policy_network = load_model(self._model_path+'/policy_network.h5')
+                state_value_network = load_model(self._model_path+'/state_network.h5')
+        else:
+            print('Used new models')
+            policy_network = self._build_network('tanh', self._n_acts)
+            old_policy_network = self._build_network('tanh', self._n_acts)
+            state_value_network = self._build_network('relu', 1)
+            self._sess.run(tf.global_variables_initializer())
         
         state_value = state_value_network(obs_ph)
         new_state_value = state_value_network(new_obs_ph)
@@ -89,8 +108,9 @@ class PPO():
         state_value_optimizer = tf.train.AdamOptimizer(self._learning_rate)
         train_policy = policy_optimizer.minimize(policy_loss)
         train_state_value = state_value_optimizer.minimize(state_value_loss)
-        self._sess = tf.Session()
-        self._sess.run(tf.global_variables_initializer())
+        self._sess.run(tf.variables_initializer(policy_optimizer.variables()))
+        self._sess.run(tf.variables_initializer(state_value_optimizer.variables()))
+
 
         self._graph = [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, \
                         policy_network, old_policy_network, actions, train_policy, train_state_value]
@@ -152,7 +172,7 @@ class PPO():
 
     def _build_network(self, activation = 'relu', n_output_units = 1):
         mlp = tf.keras.models.Sequential()
-        mlp.add(tf.keras.layers.Dense(16, activation=activation))
-        mlp.add(tf.keras.layers.Dense(16, activation=activation))
+        mlp.add(tf.keras.layers.Dense(32, activation=activation))
+        mlp.add(tf.keras.layers.Dense(32, activation=activation))
         mlp.add(tf.keras.layers.Dense(n_output_units, activation=None))
         return mlp
