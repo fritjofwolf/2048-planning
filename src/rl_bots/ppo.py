@@ -1,5 +1,4 @@
 import tensorflow as tf
-# import tensorflow_probability as tfp
 import numpy as np
 import logging
 from tqdm import tqdm_notebook
@@ -26,7 +25,7 @@ class PPO():
 
 
     def train(self, n_epochs, K = 5):
-        [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, policy_network, old_policy_network, actions, train_policy, train_state_value] = self._graph
+        [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, policy_network, old_policy_network, state_value_network, actions, train_policy, train_state_value] = self._graph
         data_collector = A2CDataCollector(self._sess, actions, obs_ph, 20, 20)
         for i in tqdm_notebook(range(n_epochs)):
             self._update_old_network()
@@ -117,12 +116,12 @@ class PPO():
 
 
         self._graph = [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, \
-                        policy_network, old_policy_network, actions, train_policy, train_state_value]
+                        policy_network, old_policy_network, state_value_network, actions, train_policy, train_state_value]
 
 
     def _build_network(self, activation = 'relu', n_output_units = 1):
         mlp = tf.keras.models.Sequential()
-        mlp.add(tf.keras.layers.Dense(32, activation=activation))
+        mlp.add(tf.keras.layers.Dense(32, activation=activation, input_shape=(self._obs_dim,)))
         mlp.add(tf.keras.layers.Dense(32, activation=activation))
         mlp.add(tf.keras.layers.Dense(n_output_units, activation=None))
         return mlp
