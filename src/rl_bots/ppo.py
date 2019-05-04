@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import logging
-from tqdm import tqdm_notebook
+from tqdm import tqdm_notebook, tqdm
 
 from io2048.io_offline import IOOffline
 from rl_bots.a2c_data_collection import A2CDataCollector
@@ -27,7 +27,7 @@ class PPO():
     def train(self, n_epochs, K = 5):
         [obs_ph, act_ph, new_obs_ph, rew_ph, terminal_ph, policy_network, old_policy_network, state_value_network, actions, train_policy, train_state_value] = self._graph
         data_collector = A2CDataCollector(self._sess, actions, obs_ph, 20, 20)
-        for i in tqdm_notebook(range(n_epochs)):
+        for i in tqdm(range(n_epochs)):
             self._update_old_network()
             obs, acts, new_obs, rews, terminal = data_collector.collect_data()
             for j in range(K):
